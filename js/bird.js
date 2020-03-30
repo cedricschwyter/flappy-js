@@ -12,25 +12,18 @@ class Bird {
         return this.m_pos;
     }
 
-    get_vel() {
-        return this.m_vel;
-    }
-
-    get_acc() {
-        return this.m_acc;
-    }
-
     jump() {
-        this.m_vel = createVector(0, -50);
+        this.m_vel = createVector(0, -POWER);
     }
 
     check_bounds() {
         if(this.m_pos.y < this.m_radius) {
             this.m_pos = createVector(this.m_pos.x, this.m_radius);
-            this.m_vel = createVector(0, -this.m_vel.y * 90 / 100);
-        } else if(this.m_pos.y > height - this.m_radius) {
+            this.m_vel = createVector(0, -this.m_vel.y * BOUNCE);
+        }
+        if(this.m_pos.y > height - this.m_radius) {
             this.m_pos = createVector(this.m_pos.x, height - this.m_radius);
-            this.m_vel = createVector(0, -this.m_vel.y * 90 / 100);
+            this.m_vel = createVector(0, -this.m_vel.y * BOUNCE);
         }
     }
 
