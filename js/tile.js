@@ -19,7 +19,11 @@ class Tile {
     draw() {
         color(0);
         stroke(5);
-        rect(width/2 + this.m_offset,0 ,this.m_width, this.m_height);
-		rect(width/2 + this.m_offset,height - (height- this.m_height- 300) ,this.m_width,height - this.m_height - 300);
+		if(this.m_index == -1){
+			
+		}else{
+			rect(0 + this.m_offset,0 ,this.m_width - 200, this.m_height);
+			rect(0 + this.m_offset,height - (height - this.m_height- 300) ,this.m_width -200,height - this.m_height - 300);
+		}
     }
 }

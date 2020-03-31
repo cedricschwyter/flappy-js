@@ -12,6 +12,8 @@ var bird;
 
 var bounced = 0;
 
+var startCondition = true;
+
 function preload() {
     // TODO: load textures
 }
@@ -21,14 +23,25 @@ function setup() {
     height = document.documentElement.clientHeight;
     // keep aspect ratio at 4:3, such that always exactly 
     // 4 elements with width = width / 4 fit on screen
+	// add start conditition 
     if(width > height)
         width = 4 * height / 3; 
     else
         height = 3 * width / 4;
     bird = new Bird();
     tiles = [];
-    for(i = 0; i < 5; i++)      // 5 elements (4 on screen and 1 moving in)
-        tiles.push(new Tile(i));
+	if(startCondition == true){	//length flalse ????
+		tiles.push(new Tile(-1));
+		tiles.push(new Tile(-1));
+		tiles.push(new Tile(2));
+		tiles.push(new Tile(3)); 
+		tiles.push(new Tile(4));
+		startCondition = false;
+	}else{
+		for(i = 0; i < 5; i++)      // 5 elements (4 on screen and 1 moving in)
+			tiles.push(new Tile(i));
+	}
+
     createCanvas(width, height);
 }
 
