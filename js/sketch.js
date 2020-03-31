@@ -10,6 +10,8 @@ var HEIGHT;
 var tiles;
 var bird;
 
+var bounced = 0;
+
 function preload() {
     // TODO: load textures
 }
@@ -41,6 +43,9 @@ function draw() {
 }
 
 function keyPressed() {
-    if(keyCode == 32)
+    if(keyCode == 32){
         bird.jump();
+		bounced = millis();
+	}
+		
 }
