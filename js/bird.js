@@ -37,7 +37,6 @@ class Bird {
         this.m_pos = this.m_pos.add(this.m_vel);
         this.m_vel = this.m_vel.add(createVector(0, 3));
         this.check_bounds();
-		console.log(millis() - bounced);
     }
 
     draw() {
