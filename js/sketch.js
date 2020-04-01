@@ -84,12 +84,12 @@ function draw() {
 			
 		}
 		if(LysergsaeurediethylamidMode && millis() % 100){
-			bird.m_color = color(random(0,255), random(0,255), random(0,255)); //https://youtu.be/dQw4w9WgXcQ
+			bird.m_color = color(random(0,255), random(0,255), random(0,255)); //https://youtu.be/uFDMKOL533E
 		}
 		
 		textSize(64);
 		fill(0, 0, 255);
-		text(score, 0, 60);
+		text(score, 10, 60);
 	}
 	if(deathMode){
 		textSize(64);
