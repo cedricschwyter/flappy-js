@@ -5,7 +5,7 @@ class Tile {
 		this.m_isVisible = isVisible;
         this.m_index = _index;
         this.m_width = width / 4;
-		this.m_height = random(200, height - 300 - 200);
+		this.m_height = random(height/4 , height - height/2 - bird.m_size);
 		this.m_offset = this.m_index * this.m_width;
 		this.m_col = color(0, 0, 0);
     }
@@ -41,7 +41,7 @@ class Tile {
 			
 		} else {
 			rect(this.m_offset, 0, this.m_width / 4, this.m_height);
-			rect(this.m_offset, height - (height - this.m_height - 300), this.m_width / 4, height - this.m_height - 300);
+			rect(this.m_offset, height - (height - this.m_height - height/4), this.m_width / 4, height - this.m_height - height/4);
 		}
     }
 }
