@@ -24,7 +24,10 @@ class Tile {
 
 	collision() {
 		if(bird.m_pos.x - bird.m_size < this.m_offset + this.m_width / 4 && bird.m_pos.x + bird.m_size > this.m_offset)
-			this.m_col = color(255, 0, 0);
+			if(bird.m_pos.y + bird.m_size > height - (height - this.m_height - height/4) || bird.m_pos.y - bird.m_size < this.m_height)
+				this.m_col = color(255, 0, 0);
+			else
+				this.m_col = color(0, 0, 0);
 		else
 			this.m_col = color(0, 0, 0);
 	}
