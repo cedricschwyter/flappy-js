@@ -12,8 +12,6 @@ var bird;
 
 var bounced = 0;
 
-var startCondition = true;
-
 function preload() {
     // TODO: load textures
 }
@@ -30,17 +28,13 @@ function setup() {
         height = 3 * width / 4;
     bird = new Bird();
     tiles = [];
-	if(startCondition == true){	//hacky
-		tiles.push(new Tile(0,false));
-		tiles.push(new Tile(1,false));
-		tiles.push(new Tile(2));
-		tiles.push(new Tile(3)); 
-		tiles.push(new Tile(4));
-		startCondition = false;
-	}else{
-		for(i = 0; i < 5; i++)      // 5 elements (4 on screen and 1 moving in)
-			tiles.push(new Tile(i));
-	}
+    tiles.push(new Tile(0, bird, false));
+    tiles.push(new Tile(1, bird, false));
+    tiles.push(new Tile(2, bird));
+    tiles.push(new Tile(3, bird)); 
+    tiles.push(new Tile(4, bird));
+    tiles.push(new Tile(5, bird));
+    tiles.push(new Tile(6, bird));
 
     createCanvas(width, height);
 }
@@ -50,9 +44,9 @@ function draw() {
     tiles.forEach(_tile => {
         _tile.update();
         _tile.draw();
-		if(_tile.get_outofbounds() == true){
-			tiles.push(new Tile(4));
-			tiles.shift();
+		if(_tile.get_outofbounds()){
+            tiles.push(new Tile(5, bird));
+            tiles.shift();
 		}
     });
     bird.update();
@@ -64,5 +58,4 @@ function keyPressed() {
         bird.jump();
 		bounced = millis();
 	}
-		
 }
