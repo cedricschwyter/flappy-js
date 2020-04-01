@@ -10,6 +10,8 @@ var HEIGHT;
 var tiles;
 var bird;
 
+var score = 0;
+
 var bounced = 0;
 
 function preload() {
@@ -52,6 +54,9 @@ function draw() {
     });
     bird.update();
     bird.draw();
+	textSize(64);
+	fill(0,0,255);
+	text(score, 0, 60);
 }
 
 function keyPressed() {

@@ -5,9 +5,11 @@ class Tile {
 		this.m_isVisible = isVisible;
         this.m_index = _index;
         this.m_width = width / 4;
-		this.m_height = random(height/4 , height - height/2 - bird.m_size);
+		this.m_height_t = random(height/6 , height - height/2 - bird.m_size);
+		this.m_height_b = height - (height - this.m_height_t - height/2);
 		this.m_offset = this.m_index * this.m_width;
 		this.m_col = color(0, 0, 0);
+		this.m_passed= false;
     }
 
     get_index() {
@@ -23,18 +25,34 @@ class Tile {
     }
 
 	collision() {
-		if(bird.m_pos.x - bird.m_size < this.m_offset + this.m_width / 4 && bird.m_pos.x + bird.m_size > this.m_offset)
-			if(bird.m_pos.y + bird.m_size > height - (height - this.m_height - height/4) || bird.m_pos.y - bird.m_size < this.m_height)
-				this.m_col = color(255, 0, 0);
-			else
+		if(this.m_isVisible){
+			if(bird.m_pos.x - bird.m_size < this.m_offset + this.m_width / 4 && bird.m_pos.x + bird.m_size > this.m_offset){
+				if(bird.m_pos.y + bird.m_size > this.m_height_b || bird.m_pos.y - bird.m_size < this.m_height_t){
+					this.m_col = color(255, 0, 0);
+					//setup();
+				}else{
+					this.m_col = color(0, 0, 0);
+				}
+			}else{
 				this.m_col = color(0, 0, 0);
-		else
-			this.m_col = color(0, 0, 0);
+			}
+		}
+	}
+	
+	score(){
+		if(this.m_isVisible && !this.m_passed){
+			if(bird.m_pos.x - bird.m_size > this.m_offset + this.m_width / 4){
+				score++;
+				this.m_passed = true;
+				console.log(score);
+			}
+		}
 	}
 
     update() {
         this.m_offset -= SPEED;
 		this.collision();
+		this.score();
 	}
 
     draw() {
@@ -43,8 +61,8 @@ class Tile {
 		if(this.m_isVisible == false){
 			
 		} else {
-			rect(this.m_offset, 0, this.m_width / 4, this.m_height);
-			rect(this.m_offset, height - (height - this.m_height - height/4), this.m_width / 4, height - this.m_height - height/4);
+			rect(this.m_offset, 0, this.m_width / 4, this.m_height_t);
+			rect(this.m_offset, this.m_height_b, this.m_width / 4, height - this.m_height_b);
 		}
     }
 }
