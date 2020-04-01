@@ -36,7 +36,8 @@ function setup() {
     tiles.push(new Tile(5, bird));
     tiles.push(new Tile(6, bird));
 
-    createCanvas(width, height);
+    let canvas = createCanvas(width, height);
+    canvas.position(WIDTH / 4, 0, "fixed");
 }
 
 function draw() {
