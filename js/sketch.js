@@ -30,9 +30,9 @@ function setup() {
         height = 3 * width / 4;
     bird = new Bird();
     tiles = [];
-	if(startCondition == true){	//length flalse ????
-		tiles.push(new Tile(-1));
-		tiles.push(new Tile(-1));
+	if(startCondition == true){	//hacky
+		tiles.push(new Tile(0,false));
+		tiles.push(new Tile(1,false));
 		tiles.push(new Tile(2));
 		tiles.push(new Tile(3)); 
 		tiles.push(new Tile(4));
@@ -50,6 +50,10 @@ function draw() {
     tiles.forEach(_tile => {
         _tile.update();
         _tile.draw();
+		if(_tile.get_outofbounds() == true){
+			tiles.push(new Tile(4));
+			tiles.shift();
+		}
     });
     bird.update();
     bird.draw();
