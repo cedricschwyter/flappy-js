@@ -29,7 +29,7 @@ class Tile {
 			if(bird.m_pos.x - bird.m_size < this.m_offset + this.m_width / 4 && bird.m_pos.x + bird.m_size > this.m_offset){
 				if(bird.m_pos.y + bird.m_size > this.m_height_b || bird.m_pos.y - bird.m_size < this.m_height_t){
 					this.m_col = color(255, 0, 0);
-					//setup();
+					deathMode = true;
 				}else{
 					this.m_col = color(0, 0, 0);
 				}
@@ -43,8 +43,10 @@ class Tile {
 		if(this.m_isVisible && !this.m_passed){
 			if(bird.m_pos.x - bird.m_size > this.m_offset + this.m_width / 4){
 				score++;
+				if(score > highscore){
+					highscore = score;
+				}
 				this.m_passed = true;
-				console.log(score);
 			}
 		}
 	}

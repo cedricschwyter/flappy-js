@@ -11,8 +11,12 @@ var tiles;
 var bird;
 
 var score = 0;
+var highscore = 0;
 
 var bounced = 0;
+
+var startMode = true;
+var deathMode = false;
 
 function preload() {
     // TODO: load textures
@@ -40,28 +44,64 @@ function setup() {
 
     let canvas = createCanvas(width, height);
     canvas.position(WIDTH / 4, 0, "fixed");
+	if (startMode){
+		background(255);
+		tiles.forEach(_tile => {
+			_tile.update();
+			_tile.draw();
+			if(_tile.get_outofbounds()){
+				tiles.push(new Tile(5));
+				tiles.shift();
+			}
+		});
+		bird.update();
+		bird.draw();
+		textSize(64);
+		fill(0, 0, 255);
+		text('PRESS SPACE TO START', width/4, height/2);
+	}
 }
 
 function draw() {
-    background(255);
-    tiles.forEach(_tile => {
-        _tile.update();
-        _tile.draw();
-		if(_tile.get_outofbounds()){
-            tiles.push(new Tile(5));
-            tiles.shift();
-		}
-    });
-    bird.update();
-    bird.draw();
-	textSize(64);
-	fill(0,0,255);
-	text(score, 0, 60);
+	if(!startMode && !deathMode){
+		background(255);
+		tiles.forEach(_tile => {
+			_tile.update();
+			_tile.draw();
+			if(_tile.get_outofbounds()){
+				tiles.push(new Tile(5));
+				tiles.shift();
+			}
+		});
+		bird.update();
+		bird.draw();
+		textSize(64);
+		fill(0, 0, 255);
+		text(score, 0, 60);
+	}
+	if(deathMode){
+		textSize(64);
+		fill(0, 0, 255);
+		text('SCORE:' + score + ' HIGHSCORE: ' + highscore, width/4, height/2);
+	}
 }
+
 
 function keyPressed() {
     if(keyCode == 32){
-        bird.jump();
-		bounced = millis();
+		if(!startMode && !deathMode){
+			bird.jump();
+			bounced = millis();
+		}
+		if(startMode){
+			startMode = false;
+		}
+		if(deathMode){
+			score = 0;
+			deathMode = false;
+			startMode = true;
+			setup();
+		}
 	}
+	
 }
