@@ -17,7 +17,7 @@ var bounced = 0;
 
 var startMode = true;
 var deathMode = false;
-var drugMode = false;
+var LysergsaeurediethylamidMode = false;
 
 var bgcolor = color(240,240,240);
 
@@ -79,8 +79,12 @@ function draw() {
 		bird.update();
 		bird.draw();
 		
-		if(drugMode && millis() % 1000){
+		if(LysergsaeurediethylamidMode && millis() % 1000){
 			SPEED = random(1,20);
+			
+		}
+		if(LysergsaeurediethylamidMode && millis() % 100){
+			bird.m_color = color(random(0,255), random(0,255), random(0,255)); //https://youtu.be/dQw4w9WgXcQ
 		}
 		
 		textSize(64);
@@ -90,9 +94,12 @@ function draw() {
 	if(deathMode){
 		textSize(64);
 		fill(0, 0, 255);
-		text('SCORE:' + score + ' HIGHSCORE: ' + highscore, width/4, height/2);
+		if(score != 666)
+			text('SCORE:' + score + ' HIGHSCORE: ' + highscore, width/4, height/2);
+		else
+			text('SCORE: SATANIC' + ' HIGHSCORE: ' + highscore, width/4, height/2);
 	}
-}
+1}
 
 
 function keyPressed() {
@@ -112,7 +119,7 @@ function keyPressed() {
 		}
 	}
 	if(keyCode == 68){
-		drugMode = true;
+		LysergsaeurediethylamidMode = true;
 	}
 	
 }

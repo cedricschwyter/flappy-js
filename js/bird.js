@@ -6,6 +6,7 @@ class Bird {
         this.m_vel = createVector(0, 0);
         this.m_textures = [];
         this.m_size = width / 32;
+		this.m_color = color(0,255,0);
     }
 
     get_pos() {
@@ -38,7 +39,7 @@ class Bird {
     }
 
     draw() {
-        fill(0,255,0);
+        fill(this.m_color);
         circle(this.m_pos.x, this.m_pos.y, 2 * this.m_size);
     }
 }
