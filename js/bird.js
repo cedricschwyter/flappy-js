@@ -5,7 +5,7 @@ class Bird {
         this.m_pos = createVector(width / 3, height / 2);
         this.m_vel = createVector(0, 0);
         this.m_textures = [];
-        this.m_radius = 50;
+        this.m_size = width / 32;
     }
 
     get_pos() {
@@ -17,20 +17,18 @@ class Bird {
     }
 
     check_bounds() {
-		if(this.m_pos.y > height - this.m_radius && millis() - bounced > 3000) {
-            this.m_pos = createVector(this.m_pos.x, height - this.m_radius);
+		if(this.m_pos.y > height - this.m_size && millis() - bounced > 3000) {
+            this.m_pos = createVector(this.m_pos.x, height - this.m_size);
             this.m_vel = createVector(0,0);
         }
-        if(this.m_pos.y < this.m_radius) {
-            this.m_pos = createVector(this.m_pos.x, this.m_radius);
+        if(this.m_pos.y < this.m_size) {
+            this.m_pos = createVector(this.m_pos.x, this.m_size);
             this.m_vel = createVector(0, -this.m_vel.y * BOUNCE);
         }
-        if(this.m_pos.y > height - this.m_radius) {
-            this.m_pos = createVector(this.m_pos.x, height - this.m_radius);
+        if(this.m_pos.y > height - this.m_size) {
+            this.m_pos = createVector(this.m_pos.x, height - this.m_size);
             this.m_vel = createVector(0, -this.m_vel.y * BOUNCE);
         }
-		
-		
     }
 
     update() {
@@ -41,6 +39,6 @@ class Bird {
 
     draw() {
         fill(0,255,0);
-        circle(this.m_pos.x, this.m_pos.y, 2 * this.m_radius);
+        circle(this.m_pos.x, this.m_pos.y, 2 * this.m_size);
     }
 }

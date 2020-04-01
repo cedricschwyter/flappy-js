@@ -28,13 +28,13 @@ function setup() {
         height = 3 * width / 4;
     bird = new Bird();
     tiles = [];
-    tiles.push(new Tile(0, bird, false));
-    tiles.push(new Tile(1, bird, false));
-    tiles.push(new Tile(2, bird));
-    tiles.push(new Tile(3, bird)); 
-    tiles.push(new Tile(4, bird));
-    tiles.push(new Tile(5, bird));
-    tiles.push(new Tile(6, bird));
+    tiles.push(new Tile(0, false));
+    tiles.push(new Tile(1, false));
+    tiles.push(new Tile(2));
+    tiles.push(new Tile(3)); 
+    tiles.push(new Tile(4));
+    tiles.push(new Tile(5));
+    tiles.push(new Tile(6));
 
     let canvas = createCanvas(width, height);
     canvas.position(WIDTH / 4, 0, "fixed");
@@ -46,7 +46,7 @@ function draw() {
         _tile.update();
         _tile.draw();
 		if(_tile.get_outofbounds()){
-            tiles.push(new Tile(5, bird));
+            tiles.push(new Tile(5));
             tiles.shift();
 		}
     });
