@@ -1,6 +1,6 @@
 
 
-const SPEED  = 5;       // the game speed (how many pixels per iteration it shifts)
+var SPEED  = 5;       // the game speed (how many pixels per iteration it shifts)
 const POWER  = 30;      // the jump power of the bird (initial upwards velocity for jump)
 const BOUNCE = 0.65;    // percentage of the jump energy to get inverted on impact with floor or ceiling
 
@@ -17,6 +17,9 @@ var bounced = 0;
 
 var startMode = true;
 var deathMode = false;
+var drugMode = false;
+
+var bgcolor = color(240,240,240);
 
 function preload() {
     // TODO: load textures
@@ -45,7 +48,7 @@ function setup() {
     let canvas = createCanvas(width, height);
     canvas.position(WIDTH / 4, 0, "fixed");
 	if (startMode){
-		background(255);
+		background(240);
 		tiles.forEach(_tile => {
 			_tile.update();
 			_tile.draw();
@@ -64,7 +67,7 @@ function setup() {
 
 function draw() {
 	if(!startMode && !deathMode){
-		background(255);
+		background(240);
 		tiles.forEach(_tile => {
 			_tile.update();
 			_tile.draw();
@@ -75,6 +78,11 @@ function draw() {
 		});
 		bird.update();
 		bird.draw();
+		
+		if(drugMode && millis() % 1000){
+			SPEED = random(1,20);
+		}
+		
 		textSize(64);
 		fill(0, 0, 255);
 		text(score, 0, 60);
@@ -102,6 +110,9 @@ function keyPressed() {
 			startMode = true;
 			setup();
 		}
+	}
+	if(keyCode == 68){
+		drugMode = true;
 	}
 	
 }

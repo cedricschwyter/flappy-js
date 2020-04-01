@@ -42,7 +42,7 @@ class Tile {
 	score(){
 		if(this.m_isVisible && !this.m_passed){
 			if(bird.m_pos.x - bird.m_size > this.m_offset + this.m_width / 4){
-				score++;
+				score++; // Contact - teacher - 12.5 clicks - bearing 120  u spielet si ARMAIII wenn ja wo staht de beobachter u isch das möglich?
 				if(score > highscore){
 					highscore = score;
 				}
