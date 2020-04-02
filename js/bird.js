@@ -2,44 +2,72 @@
 
 class Bird {
     constructor() {
-        this.m_pos = createVector(width / 3, height / 2);
-        this.m_vel = createVector(0, 0);
-        this.m_textures = [];
-        this.m_size = width / 32;
-		this.m_color = color(0,255,0);
+        this.x = 60;
+        this.y = random(height);
+        this.yVelocity = 0;
+        this.r = 15;
+        this.gravity = 0.8;
+        this.flyForce = -12;
+        this.highlight = false;
+        this.score = 0;
+        this.fitness = 0;
+        this.brain = new NeuralNetwork(5, 10, 2);
     }
 
-    get_pos() {
-        return this.m_pos;
+    draw() {
+        // fill(255);
+        // ellipse(this.x, this.y, this.r * 2);
+        imageMode(CENTER);
+        image(birdImg, this.x, this.y, this.r * 2, this.r * 2);
     }
 
-    jump() {
-        this.m_vel = createVector(0, -POWER);
-    }
+    think(pipes) {
+        // Get the closes pipe to the bird
+        let currentPipe = pipes.find(pipe => pipe.x + pipe.w > this.x);
 
-    check_bounds() {
-		if(this.m_pos.y > height - this.m_size && millis() - bounced > 3000) {
-            this.m_pos = createVector(this.m_pos.x, height - this.m_size);
-            this.m_vel = createVector(0,0);
-        }
-        if(this.m_pos.y < this.m_size) {
-            this.m_pos = createVector(this.m_pos.x, this.m_size);
-            this.m_vel = createVector(0, -this.m_vel.y * BOUNCE);
-        }
-        if(this.m_pos.y > height - this.m_size) {
-            this.m_pos = createVector(this.m_pos.x, height - this.m_size);
-            this.m_vel = createVector(0, -this.m_vel.y * BOUNCE);
+        // Calculate the inputs to the NN
+        let inputs = [];
+        inputs.push(this.y / height);
+        inputs.push(this.yVelocity / 10);
+        inputs.push(currentPipe.top / height);
+        inputs.push(currentPipe.bottom / height);
+        inputs.push(currentPipe.x / width);
+
+        // Predict outputs
+        let outputs = this.brain.predict(inputs);
+
+        // Fly only if ...
+        if(outputs[0] > outputs[1]) {
+            this.fly();
         }
     }
 
     update() {
-        this.m_pos = this.m_pos.add(this.m_vel);
-        this.m_vel = this.m_vel.add(createVector(0, 3));
-        this.check_bounds();
+        this.score++;
+        this.yVelocity += this.gravity;
+        this.yVelocity *= 0.9;
+        this.y += this.yVelocity;
+
+        if(this.y > height) {
+            this.y = height;
+            this.yVelocity = 0;
+        }
+
+        if(this.y < 0) {
+            this.y = 0;
+            this.yVelocity = 0;
+        }
     }
 
-    draw() {
-        fill(this.m_color);
-        circle(this.m_pos.x, this.m_pos.y, 2 * this.m_size);
+    fly() {
+        this.yVelocity += this.flyForce;
+    }
+
+    hitsPipe(pipe) {
+        return (
+            (this.y - this.r < pipe.top || this.y + this.r > pipe.bottom) && 
+            this.x + this.r > pipe.x && 
+            this.x - this.r < pipe.x + pipe.w
+        );
     }
 }
