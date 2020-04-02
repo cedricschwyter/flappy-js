@@ -1,14 +1,15 @@
-const CANV_SIZE = Math.min(window.innerHeight, window.innerWidth);
-let NUM_BIRDS = 500;
+const CANV_SIZE = Math.min(640, window.innerWidth);		// For some reason, when the window resolution is too big, no learning-effect can be observed for a long time... 
+														// That is why we set the max screen size here.
+let POP_SIZE = 300;
 const birdSrc = 'https://raw.githubusercontent.com/D3PSI/flappy-ai/master/res/textures/bird1.png';
 const pipeSrc = 'https://raw.githubusercontent.com/D3PSI/flappy-ai/master/res/textures/pipe.png'
-//const pipeSrc1 = 'https://raw.githubusercontent.com/D3PSI/flappy-ai/master/res/textures/pipe1.png'
+const pipeSrc1 = 'https://raw.githubusercontent.com/D3PSI/flappy-ai/master/res/textures/pipe1.png'
 const bgSrc = 'https://raw.githubusercontent.com/D3PSI/flappy-ai/master/res/textures/bg.png';
-let birds = [];
-let oldGen = [];
+let population = [];
+let oldPopulation = [];
 let pipes = [];
 let highScore = 0;
-let counter = 0;
+let frames = 0;
 let gen = 1;
 let speedSlider;
 let popSizeSlider;
@@ -20,32 +21,31 @@ let bgImg;
 function preload() {
 	birdImg = loadImage(birdSrc);
 	pipeImg = loadImage(pipeSrc);
-	//pipeImg1 = loadImage(pipeSrc1);
+	pipeImg1 = loadImage(pipeSrc1);
 	bgImg = loadImage(bgSrc);
 }
 
 function setup() {
 	createCanvas(CANV_SIZE, 3 * CANV_SIZE / 4);
-    createP('Lerning Speed (tab may freeze if set too high):');
+    createP('Learning Speed (tab may freeze if set too high):');
 	speedSlider = createSlider(1, 100, 1, 1);
     createP('Population size:');
 	popSizeSlider = createSlider(1, 1000, 300);
-    newGeneration(true);
+    spawnPopulation(true);
 }
 
 function draw() {
 	textSize(32);
 	fill(0);
-	text('Learning speed:', CANV_SIZE, CANV_SIZE - 20);
-	NUM_BIRDS = popSizeSlider.value();
+	POP_SIZE = popSizeSlider.value();
 	imageMode(CORNER);
-	for(i = 0; i < width; i++)
+	for(i = 0; i < CANV_SIZE / 100; i++)
 		image(bgImg, (i - 1) * 100, 0, i * 100, height);
     for(let i = 0; i < speedSlider.value(); i++) {
-        if(counter % 50 === 0) {
+        if(frames % 50 === 0) {
 			pipes.push(new Pipe());
         }
-        birds.forEach(bird => {
+        population.forEach(bird => {
             bird.think(pipes);
             bird.update();
             if(bird.score > highScore) {
@@ -58,20 +58,19 @@ function draw() {
             if(pipe.isOffscreen()) {
                 pipes.splice(i, 1);
             }
-            for(let j = birds.length - 1; j >= 0; j--){
-                let bird = birds[j];
+            for(let j = population.length - 1; j >= 0; j--){
+                let bird = population[j];
                 if(bird.hitsPipe(pipe) || 
                     bird.y - bird.r < 0 ||
                     bird.y + bird.r > height) {
-                    oldGen.push(birds.splice(j, 1)[0]);
+                    oldPopulation.push(population.splice(j, 1)[0]);
                 }
             }
         }
-        counter++;
-        endOfGen();
+        frames++;
+        endGen();
     }
-    background('#00a8ff');
-    birds.forEach(bird => {
+    population.forEach(bird => {
         bird.draw();
     });
     pipes.forEach(pipe => {
@@ -81,45 +80,47 @@ function draw() {
     rect(0, height - 30, width, height);
     fill(0);
     textSize(20);
-    text(`Score: ${birds[0].score.toString().padStart(10, ' ')}, Generation: ${gen}, Highest Score: ${highScore}`, 20, height - 10);
+    text(`Score: ${population[0].score.toString()}, Gen: ${gen}, High: ${highScore}`, 20, height - 10);
 }
 
-function newGeneration(genOne) {
-    for(let i = 0; i < NUM_BIRDS; i++) {
-        birds.push(genOne ? new Bird() : birdsPickOne());
+function spawnPopulation(genOne) {
+    for(let i = 0; i < POP_SIZE; i++) {
+        population.push(genOne ? new Bird() : selectBird());
     }
 }
 
-function endOfGen() {
-    if(birds.length === 0) {
-        calculateFitness();
-        newGeneration();
-        oldGen = [];
+function endGen() {
+    if(population.length === 0) {
+        getFitness();
+        spawnPopulation();
+        oldPopulation = [];
         pipes = [];
-        counter = 0;
+        frames = 0;
         gen++;
     }
 }
 
-function birdsPickOne() {
+function selectBird() {
     let index = 0;
     let r = random(1);
     while(r > 0) {
-        r -= oldGen[index].fitness;
+        r -= oldPopulation[index].fitness;
         index++;
-	}
+    }
     index--;
     let newBird = new Bird();
-    let pickedBird = oldGen[index];
+    // Select an old bird and mutate it's brain
+    let pickedBird = oldPopulation[index];
     pickedBird.brain.mutate(mutate);
+    // Copy the brain to the new bird
     newBird.brain = pickedBird.brain.copy();
+    // Return the new bird
     return newBird;
 }
 
-function calculateFitness() {
-    let sum = oldGen.reduce((total, bird) => total += bird.score, 0);
-
-    oldGen.forEach(bird => {
+function getFitness() {
+    let sum = oldPopulation.reduce((total, bird) => total += bird.score, 0);
+    oldPopulation.forEach(bird => {
         bird.fitness = bird.score / sum;
     });
 }
@@ -135,7 +136,8 @@ function mutate(val) {
 
 // Code by Daniel Shiffman on TheCodingTrain
 // Other techniques for learning
-// Simple, highly specialized implementation of a ML-library with genetic algorithm
+// Simple JS NeuralNetwork implementation with matrix transforms
+// Simple genetic algorithm
 
 class ActivationFunction {
   constructor(func, dfunc) {

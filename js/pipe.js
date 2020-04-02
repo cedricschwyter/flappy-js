@@ -13,7 +13,7 @@ class Pipe {
 
     draw() {
         imageMode(CORNER);
-        image(pipeImg, this.x, 0, this.w, this.top);
+        image(pipeImg1, this.x, 0, this.w, this.top);
         image(pipeImg, this.x, this.bottom, this.w, height);
     }
 
